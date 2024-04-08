@@ -1,9 +1,12 @@
 pub mod mask;
 pub mod game;
+pub mod hitbox;
 
 
 use game::Game;
 use sfml::graphics::RenderTarget;
+
+use crate::game::Coords;
 
 const WIN_WIDTH: u32 = 1600;
 const WIN_HEIGHT: u32 = 900;
@@ -34,14 +37,20 @@ fn main() {
     for (coords, cell) in game.iter_masked_cells(&star) {
         frame.add_action(game::Action::Cell(coords, game::CellAction::Set(game::Cell::new(game::Cells::Sand))));
     }
-    for i in 0..CELLS_WIDTH {
+    for i in 0..20 {
         frame.add_action(game::Action::Cell(game::Coords { x: i as i32, y: 20 }, game::CellAction::Set(game::Cell::new(game::Cells::Wall))));
     }
     game.apply_frame(&mut frame);
 
     use std::time::Instant;
     let mut last_frame = Instant::now();
-    
+
+    let a = (0.5, 0.5);
+    let b = (100.0, 250.0);
+
+    let c = hitbox::Hitbox::move_point_to(&game, a, b, 50);
+    println!("{:?}", c);
+
     loop {
         let current_frame = Instant::now();
         let delta = current_frame.duration_since(last_frame).as_secs_f32();

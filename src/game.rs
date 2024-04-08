@@ -116,6 +116,11 @@ impl Game {
                             cell.color_mode = color_mode;
                             self.set_cell(coords.x, coords.y, cell);
                         }
+                        CellAction::SetHardness(hardness) => {
+                            let mut cell = self.get_cell(coords.x, coords.y).clone();
+                            cell.hardness = hardness;
+                            self.set_cell(coords.x, coords.y, cell);
+                        }
                     }
                 }
                 Action::Swap(coords1, coords2) => {
@@ -133,11 +138,12 @@ impl Game {
 pub struct Cell {
     pub kind: Cells,
     pub color_mode: ColorMode,
+    pub hardness: i32,
 }
 
 impl Cell {
     pub fn new(kind: Cells) -> Cell {
-        Cell { kind, color_mode: kind.color_mode() }
+        Cell { kind, color_mode: kind.color_mode(), hardness: kind.hardness()}
     }
 }
 
@@ -147,6 +153,7 @@ impl Default for Cell {
         Cell {
             kind,
             color_mode: kind.color_mode(),
+            hardness: kind.hardness(),
         }
     }
 }
@@ -225,7 +232,7 @@ impl Cells {
         }
     }
 
-    pub fn hardness(&self) -> u32 {
+    pub fn hardness(&self) -> i32 {
         match self {
             Cells::Air => 2,
             Cells::Wall => 100,
@@ -367,5 +374,6 @@ pub enum CellAction {
     Set(Cell),
     SetKind(Cells),
     SetColorMode(ColorMode),
+    SetHardness(i32),
     Clear,
 }
